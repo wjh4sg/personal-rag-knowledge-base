@@ -79,8 +79,15 @@ def _services(config_path: str | Path) -> Services:
 
 
 def _require_index(services: Services) -> None:
-    if not services.chunk_store.exists() or not services.bm25_store.exists():
-        raise MissingIndexError("知识库索引不存在，请先运行 rag index <文档目录>。")
+    if (
+        not services.chunk_store.exists()
+        or not services.bm25_store.exists()
+        or not services.vector_store.exists()
+    ):
+        raise MissingIndexError(
+            "知识库索引不存在或不完整，请先运行 rag index <文档目录>，"
+            "或运行 rag rebuild <文档目录> 全量重建。"
+        )
     services.bm25_store.load()
 
 

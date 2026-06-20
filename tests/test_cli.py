@@ -1,6 +1,9 @@
 import yaml
 
 from personal_rag.cli import main
+from personal_rag.core.schema import Chunk
+from personal_rag.storage.bm25_store import BM25Store
+from personal_rag.storage.chunk_store import ChunkStore
 
 
 def write_config(tmp_path):
@@ -67,4 +70,27 @@ def test_stats_works_before_first_index(tmp_path, capsys):
 def test_cli_returns_argument_error_for_missing_command(capsys):
     assert main([]) == 2
     assert "usage:" in capsys.readouterr().err.lower()
+
+
+def test_cli_rejects_incomplete_index_when_chroma_is_empty(tmp_path, capsys):
+    config = write_config(tmp_path)
+    chunk = Chunk(
+        chunk_id="chunk_1",
+        doc_id="doc_1",
+        text="incomplete index",
+        chunk_hash="hash_1",
+        metadata={"source_path": "notes.md", "page": None, "heading": None},
+    )
+    base = tmp_path / "storage"
+    ChunkStore(base / "chunks.jsonl").save_all([chunk])
+    bm25 = BM25Store(base / "bm25.pkl")
+    bm25.build([chunk])
+    bm25.save()
+
+    exit_code = main(["--config", str(config), "search", "query"])
+    error = capsys.readouterr().err
+
+    assert exit_code == 3
+    assert "索引不存在或不完整" in error
+    assert "rag rebuild" in error
 
