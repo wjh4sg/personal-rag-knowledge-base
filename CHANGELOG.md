@@ -2,6 +2,17 @@
 
 本项目遵循 [Semantic Versioning](https://semver.org/)。
 
+## [0.1.2] - 2026-06-21
+
+### Added
+
+- GitHub Actions 在 Python 3.11 和 3.12 上运行 Ruff、离线测试与 wheel 构建。
+- README CI 状态徽章与面试讲解重点。
+
+### Changed
+
+- v0.1 面试版进入冻结状态，后续仅接受真实缺陷修复。
+
 ## [0.1.1] - 2026-06-21
 
 ### Added
@@ -28,6 +39,7 @@
 - Hit@1、Hit@3、MRR 与引用覆盖率评估。
 - 离线测试套件和 ModelScope 在线烟雾测试。
 
+[0.1.2]: https://github.com/wjh4sg/personal-rag-knowledge-base/releases/tag/v0.1.2
 [0.1.1]: https://github.com/wjh4sg/personal-rag-knowledge-base/releases/tag/v0.1.1
 [0.1.0]: https://github.com/wjh4sg/personal-rag-knowledge-base/releases/tag/v0.1.0
 

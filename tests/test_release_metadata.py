@@ -13,8 +13,8 @@ def load_pyproject():
 def test_version_metadata_is_consistent():
     pyproject = load_pyproject()
 
-    assert pyproject["project"]["version"] == "0.1.1"
-    assert personal_rag.__version__ == "0.1.1"
+    assert pyproject["project"]["version"] == "0.1.2"
+    assert personal_rag.__version__ == "0.1.2"
 
 
 def test_project_uses_mit_license():

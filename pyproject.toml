@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-rag"
-version = "0.1.1"
+version = "0.1.2"
 description = "Interview-ready local hybrid RAG knowledge base"
 readme = "README.md"
 license = "MIT"
