@@ -82,3 +82,32 @@ def test_stats_store_round_trips_index_metadata(tmp_path):
 
     assert store.load() == stats
 
+
+def test_doc_store_reset_removes_manifest(tmp_path):
+    store = DocStore(tmp_path / "docs.json")
+    store.save({"notes.md": {"content_hash": "abc", "doc_ids": ["doc_1"]}})
+
+    store.reset()
+
+    assert not store.exists()
+    assert store.load() == {}
+
+
+def test_chunk_store_reset_removes_manifest(tmp_path):
+    store = ChunkStore(tmp_path / "chunks.jsonl")
+    store.save_all([make_chunk("chunk_1", "doc_1", "text")])
+
+    store.reset()
+
+    assert not store.exists()
+    assert store.load_all() == []
+
+
+def test_stats_store_reset_removes_metadata(tmp_path):
+    store = StatsStore(tmp_path / "stats.json")
+    store.save({"last_indexed_at": "now"})
+
+    store.reset()
+
+    assert store.load() == {}
+

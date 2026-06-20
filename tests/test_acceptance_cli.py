@@ -71,6 +71,20 @@ def test_all_five_acceptance_commands(tmp_path, capsys):
     for label in ["Hit@1", "Hit@3", "MRR", "引用覆盖率"]:
         assert label in eval_output
 
+    cache_dir = tmp_path / "cache" / "embeddings"
+    cached_files = {path.name for path in cache_dir.glob("*.json")}
+    unrelated = tmp_path / "storage" / "keep.me"
+    unrelated.write_text("keep", encoding="utf-8")
+
+    assert main([*common, "rebuild", str(docs)]) == 0
+    rebuild_output = capsys.readouterr().out
+    assert "全量重建" in rebuild_output
+    assert "Embedding 缓存命中：" in rebuild_output
+    assert cached_files
+    assert {path.name for path in cache_dir.glob("*.json")} == cached_files
+    assert unrelated.read_text(encoding="utf-8") == "keep"
+    assert main([*common, "search", "RRF 融合"]) == 0
+
 
 def test_acceptance_second_index_is_unchanged(tmp_path, capsys):
     docs = tmp_path / "docs"

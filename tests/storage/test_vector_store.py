@@ -40,3 +40,15 @@ def test_vector_store_reports_existence_after_upsert(tmp_path):
 
     assert store.exists()
 
+
+def test_vector_reset_removes_vectors_and_recreates_collection(tmp_path):
+    store = VectorStore(tmp_path / "chroma", "chunks")
+    chunk = make_chunk()
+    store.upsert([chunk], [[1.0, 0.0]])
+
+    store.reset()
+
+    assert not store.exists()
+    store.upsert([chunk], [[1.0, 0.0]])
+    assert store.exists()
+

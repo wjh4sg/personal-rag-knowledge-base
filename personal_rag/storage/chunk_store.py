@@ -38,3 +38,6 @@ class ChunkStore:
     def exists(self) -> bool:
         return self.path.exists()
 
+    def reset(self) -> None:
+        self.path.unlink(missing_ok=True)
+

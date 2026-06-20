@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 import chromadb
@@ -11,10 +12,14 @@ from personal_rag.core.schema import Chunk, RetrievedChunk
 class VectorStore:
     def __init__(self, directory: Path, collection_name: str = "chunks"):
         self.directory = directory
+        self.collection_name = collection_name
+        self._connect()
+
+    def _connect(self) -> None:
         self.directory.mkdir(parents=True, exist_ok=True)
-        self.client = chromadb.PersistentClient(path=str(directory))
+        self.client = chromadb.PersistentClient(path=str(self.directory))
         self.collection = self.client.get_or_create_collection(
-            name=collection_name,
+            name=self.collection_name,
             metadata={"hnsw:space": "cosine"},
         )
 
@@ -69,4 +74,18 @@ class VectorStore:
 
     def count(self) -> int:
         return self.collection.count()
+
+    def close(self) -> None:
+        self.client.close()
+
+    def reset(self) -> None:
+        try:
+            self.client.delete_collection(self.collection_name)
+        except ValueError:
+            pass
+        self.close()
+        del self.collection
+        del self.client
+        shutil.rmtree(self.directory, ignore_errors=False)
+        self._connect()
 

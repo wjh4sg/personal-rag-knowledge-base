@@ -53,3 +53,20 @@ def test_bm25_empty_index_returns_no_results(tmp_path):
 
     assert store.search("query", top_k=5) == []
 
+
+def test_bm25_reset_removes_pickle_and_in_memory_index(tmp_path):
+    store = BM25Store(tmp_path / "bm25.pkl")
+    store.build(
+        [
+            make_chunk("rrf", "RRF 使用排名融合。"),
+            make_chunk("vector", "向量检索语义内容。"),
+            make_chunk("cache", "缓存减少重复计算。"),
+        ]
+    )
+    store.save()
+
+    store.reset()
+
+    assert not store.exists()
+    assert store.search("RRF", top_k=5) == []
+

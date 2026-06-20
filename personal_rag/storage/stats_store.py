@@ -22,3 +22,6 @@ class StatsStore:
     def save(self, stats: dict[str, Any]) -> None:
         atomic_write_json(self.path, stats)
 
+    def reset(self) -> None:
+        self.path.unlink(missing_ok=True)
+

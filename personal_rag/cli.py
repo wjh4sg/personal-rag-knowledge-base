@@ -142,6 +142,22 @@ def run_index(services: Services, docs_path: Path) -> int:
     return 0
 
 
+def reset_index(services: Services) -> None:
+    services.doc_store.reset()
+    services.chunk_store.reset()
+    services.bm25_store.reset()
+    services.stats_store.reset()
+    services.vector_store.reset()
+
+
+def run_rebuild(services: Services, docs_path: Path) -> int:
+    if not docs_path.is_dir():
+        raise FileNotFoundError(f"Document directory does not exist: {docs_path}")
+    print("清理现有索引并开始全量重建（保留 Embedding 缓存）……")
+    reset_index(services)
+    return run_index(services, docs_path)
+
+
 def run_search(services: Services, query: str) -> int:
     _require_index(services)
     results = _retriever(services).retrieve(query)
@@ -223,6 +239,12 @@ def build_parser() -> argparse.ArgumentParser:
     index_parser = subparsers.add_parser("index", help="建立或增量更新知识库索引")
     index_parser.add_argument("docs_path", type=Path)
 
+    rebuild_parser = subparsers.add_parser(
+        "rebuild",
+        help="保留 Embedding 缓存并全量重建知识库索引",
+    )
+    rebuild_parser.add_argument("docs_path", type=Path)
+
     search_parser = subparsers.add_parser("search", help="查看混合检索结果")
     search_parser.add_argument("query")
 
@@ -243,10 +265,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     except SystemExit as error:
         return int(error.code)
 
+    services: Services | None = None
     try:
         services = _services(args.config)
         if args.command == "index":
             return run_index(services, args.docs_path)
+        if args.command == "rebuild":
+            return run_rebuild(services, args.docs_path)
         if args.command == "search":
             return run_search(services, args.query)
         if args.command == "ask":
@@ -269,6 +294,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     except Exception as error:
         print(f"运行失败：{error}", file=sys.stderr)
         return 1
+    finally:
+        if services is not None:
+            services.vector_store.close()
 
 
 if __name__ == "__main__":

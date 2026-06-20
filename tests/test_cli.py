@@ -42,7 +42,7 @@ def test_cli_exposes_all_commands(capsys):
     output = capsys.readouterr().out
 
     assert exit_code == 0
-    for command in ["index", "search", "ask", "stats", "eval"]:
+    for command in ["index", "search", "ask", "stats", "eval", "rebuild"]:
         assert command in output
 
 
@@ -93,4 +93,22 @@ def test_cli_rejects_incomplete_index_when_chroma_is_empty(tmp_path, capsys):
     assert exit_code == 3
     assert "索引不存在或不完整" in error
     assert "rag rebuild" in error
+
+
+def test_rebuild_validates_docs_directory_before_reset(tmp_path, capsys):
+    config = write_config(tmp_path)
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    (docs / "notes.txt").write_text("existing knowledge", encoding="utf-8")
+    assert main(["--config", str(config), "index", str(docs)]) == 0
+    capsys.readouterr()
+    manifest = tmp_path / "storage" / "docs.json"
+    before = manifest.read_text(encoding="utf-8")
+
+    exit_code = main(
+        ["--config", str(config), "rebuild", str(tmp_path / "missing-docs")]
+    )
+
+    assert exit_code == 2
+    assert manifest.read_text(encoding="utf-8") == before
 
