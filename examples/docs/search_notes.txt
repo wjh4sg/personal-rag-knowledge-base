@@ -1,0 +1,4 @@
+混合检索包含两条召回路径。BM25 通过 Jieba 分词后的关键词频率排序，适合查找 RRF、chunk_hash、CitationChecker 等精确术语。向量检索把问题和文档转换成 embedding，适合语义相近但表达不同的查询。
+
+系统先让两路检索各自返回候选，再用 RRF 按排名融合。融合后的结果统一标记为 source=fusion，并保留 source_path、page 和 heading 元数据，供答案生成和引用展示使用。
+

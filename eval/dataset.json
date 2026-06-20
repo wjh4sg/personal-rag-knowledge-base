@@ -1,0 +1,18 @@
+[
+  {
+    "question": "RAG 为什么需要 Rerank？",
+    "expected_sources": ["rag_notes.md"],
+    "ground_truth": "第一阶段召回可能包含噪声，Rerank 会重新判断候选与问题的相关性。"
+  },
+  {
+    "question": "这个系统怎么做增量索引？",
+    "expected_sources": ["rag_design.md"],
+    "ground_truth": "系统用文件内容 Hash 判断新增、修改、删除和未变化文件。"
+  },
+  {
+    "question": "为什么 BM25 分数和向量距离不能直接相加？",
+    "expected_sources": ["rag_notes.md", "search_notes.txt"],
+    "ground_truth": "两路分数尺度不同，因此使用 RRF 基于排名进行融合。"
+  }
+]
+
