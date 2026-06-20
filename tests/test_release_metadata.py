@@ -38,3 +38,24 @@ def test_readme_embeds_architecture_and_demo_outputs():
     assert "source: fusion" in readme
     assert "<title>" in architecture
     assert "<desc>" in architecture
+
+
+def test_ci_workflow_covers_supported_python_and_quality_gates():
+    workflow = (
+        PROJECT_ROOT / ".github" / "workflows" / "ci.yml"
+    ).read_text(encoding="utf-8")
+
+    assert '"3.11"' in workflow
+    assert '"3.12"' in workflow
+    assert "python -m ruff check ." in workflow
+    assert 'python -m pytest -m "not live" -q' in workflow
+    assert "python -m pip wheel . --no-deps --wheel-dir dist" in workflow
+
+
+def test_readme_has_ci_badge_and_interview_talking_points():
+    readme = (PROJECT_ROOT / "README.md").read_text(encoding="utf-8")
+
+    assert "actions/workflows/ci.yml/badge.svg" in readme
+    assert "## 面试讲解重点" in readme
+    for phrase in ["离线索引", "RRF", "rebuild", "Hit@K", "MRR"]:
+        assert phrase in readme
