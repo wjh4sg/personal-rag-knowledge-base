@@ -1,0 +1,27 @@
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any
+
+from personal_rag.storage.atomic import atomic_write_json
+
+
+class DocStore:
+    def __init__(self, path: Path):
+        self.path = path
+
+    def load(self) -> dict[str, dict[str, Any]]:
+        if not self.path.exists():
+            return {}
+        value = json.loads(self.path.read_text(encoding="utf-8"))
+        if not isinstance(value, dict):
+            raise ValueError(f"Document manifest must contain an object: {self.path}")
+        return value
+
+    def save(self, state: dict[str, dict[str, Any]]) -> None:
+        atomic_write_json(self.path, state)
+
+    def exists(self) -> bool:
+        return self.path.exists()
+
