@@ -110,6 +110,16 @@ py -3.12 -m pytest tests/live/test_modelscope.py -m live -q
 py -3.12 -m ruff check .
 ```
 
+## 版本管理
+
+项目遵循 [Semantic Versioning](https://semver.org/)：
+
+- `v0.1.x`：兼容性修复和小幅改进。
+- `v0.2.0`：加入 OCR、真实 Reranker 等新能力。
+- `v1.0.0`：接口和存储格式达到稳定承诺。
+
+每次发布同步更新 `pyproject.toml`、`CHANGELOG.md`、Git 标签和 GitHub Release。
+
 ## 常见错误
 
 - `401/403`：确认用户环境变量 `MODELSCOPE_API_KEY` 已设置，并重启终端或 Codex。
@@ -122,4 +132,3 @@ py -3.12 -m ruff check .
 
 第一版不支持扫描 PDF OCR、复杂表格 PDF、图片、多用户、Web UI、Agent、多轮长期
 记忆、真实 cross-encoder reranker 或 RAGAS。它们属于后续增强项。
-
