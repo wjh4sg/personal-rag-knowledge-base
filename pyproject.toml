@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "personal-rag"
+version = "0.1.0"
+description = "Interview-ready local hybrid RAG knowledge base"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "chromadb>=1.0,<2",
+  "jieba>=0.42,<1",
+  "pypdf>=5,<7",
+  "PyYAML>=6,<7",
+  "rank-bm25>=0.2,<1",
+  "requests>=2.32,<3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<10",
+  "ruff>=0.11,<1",
+]
+
+[project.scripts]
+rag = "personal_rag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["personal_rag*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "live: requires live ModelScope credentials and network access",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
