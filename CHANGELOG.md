@@ -2,6 +2,19 @@
 
 本项目遵循 [Semantic Versioning](https://semver.org/)。
 
+## [0.1.1] - 2026-06-21
+
+### Added
+
+- 保留 Embedding 缓存的 `rag rebuild` 全量重建命令。
+- README 真实 Demo 输出与 SVG 架构图。
+- MIT License 与 SPDX 包元数据。
+
+### Fixed
+
+- `search`、`ask`、`eval` 现在会拒绝缺少 Chroma、BM25 或 Chunk manifest 的不完整索引。
+- CLI 命令结束时显式关闭 Chroma client，避免 Windows 文件句柄阻止重建。
+
 ## [0.1.0] - 2026-06-21
 
 ### Added
@@ -15,5 +28,6 @@
 - Hit@1、Hit@3、MRR 与引用覆盖率评估。
 - 离线测试套件和 ModelScope 在线烟雾测试。
 
+[0.1.1]: https://github.com/wjh4sg/personal-rag-knowledge-base/releases/tag/v0.1.1
 [0.1.0]: https://github.com/wjh4sg/personal-rag-knowledge-base/releases/tag/v0.1.0
 

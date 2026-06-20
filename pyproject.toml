@@ -1,12 +1,13 @@
 [build-system]
-requires = ["setuptools>=69"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-rag"
-version = "0.1.0"
+version = "0.1.1"
 description = "Interview-ready local hybrid RAG knowledge base"
 readme = "README.md"
+license = "MIT"
 requires-python = ">=3.11"
 dependencies = [
   "chromadb>=1.0,<2",
