@@ -4,6 +4,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from pypdf import PdfReader
+
 from personal_rag.core.hashing import compute_file_hash, make_file_id
 from personal_rag.core.schema import Chunk, IndexReport
 from personal_rag.ingest.chunker import build_chunks
@@ -103,10 +105,13 @@ class Indexer:
         }
 
         new_chunks: list[Chunk] = []
+        skipped_pdf_pages = 0
         now = datetime.now(timezone.utc).astimezone().isoformat()
         for path in [*scan.added, *scan.modified]:
             relative_path = path.relative_to(docs_path).as_posix()
             documents = parse_file(path, docs_path)
+            if path.suffix.lower() == ".pdf":
+                skipped_pdf_pages += max(0, len(PdfReader(str(path)).pages) - len(documents))
             file_chunks = [
                 chunk
                 for document in documents
@@ -161,7 +166,7 @@ class Indexer:
                 len(info.get("doc_ids", [])) for info in next_state.values()
             ),
             chunk_count=len(next_chunks),
+            unsupported_count=scan.unsupported_count,
             embedding_cache_hits=cache_hits,
-            skipped_pdf_pages=0,
+            skipped_pdf_pages=skipped_pdf_pages,
         )
-

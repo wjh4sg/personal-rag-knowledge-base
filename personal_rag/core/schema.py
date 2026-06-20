@@ -69,6 +69,7 @@ class IndexReport:
     unchanged: int
     document_count: int
     chunk_count: int
+    unsupported_count: int = 0
     embedding_cache_hits: int = 0
     skipped_pdf_pages: int = 0
 
@@ -81,4 +82,3 @@ class EvaluationReport:
     mrr: float
     citation_coverage: float
     answers_without_citations: int
-

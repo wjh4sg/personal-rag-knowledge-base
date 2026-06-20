@@ -125,8 +125,10 @@ def run_index(services: Services, docs_path: Path) -> int:
     print(f"更新文件：{report.modified} 个")
     print(f"删除文件：{report.deleted} 个")
     print(f"跳过未变化文件：{report.unchanged} 个")
+    print(f"忽略不支持文件：{report.unsupported_count} 个")
     print(f"逻辑文档数：{report.document_count}")
     print(f"总 Chunk 数：{report.chunk_count}")
+    print(f"跳过 PDF 空页：{report.skipped_pdf_pages}")
     print(f"Embedding 缓存命中：{report.embedding_cache_hits}")
     print("Chroma 向量索引：完成")
     print("BM25 关键词索引：完成")
@@ -264,4 +266,3 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

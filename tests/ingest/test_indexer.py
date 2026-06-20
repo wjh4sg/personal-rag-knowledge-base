@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 import pytest
+from pypdf import PdfWriter
 
 from personal_rag.ingest.indexer import Indexer
 from personal_rag.providers.embeddings import MockEmbeddingClient
@@ -117,3 +118,16 @@ def test_embedding_cache_reuses_vector_when_content_returns(index_env):
     assert report.embedding_cache_hits == 1
     assert index_env.embedding.text_count == first_text_count + 1
 
+
+def test_index_report_counts_unsupported_files_and_empty_pdf_pages(index_env):
+    (index_env.docs / "ignored.csv").write_text("a,b", encoding="utf-8")
+    pdf_path = index_env.docs / "empty.pdf"
+    writer = PdfWriter()
+    writer.add_blank_page(width=100, height=100)
+    with pdf_path.open("wb") as target:
+        writer.write(target)
+
+    report = index_env.indexer.index(index_env.docs)
+
+    assert report.unsupported_count == 1
+    assert report.skipped_pdf_pages == 1
